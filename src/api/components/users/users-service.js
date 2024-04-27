@@ -30,11 +30,29 @@ async function getUsers(substring, sort, page, limit) {
   });
 
   // Paginate users
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const paginatedUsers = sortedUsers.slice(startIndex, endIndex);
-
-  return paginatedUsers;
+  const BanyakPages = (page - 1) * limit;
+  const limitPages = page * limit;
+  const paginatedUsers = sortedUsers.slice(BanyakPages, limitPages);
+  const TotalRegUser = sortedUsers.length;
+  const totalPages = Math.ceil(TotalRegUser / limit);
+  const hasPreviousPage = page > 1;
+  const hasNextPage = page < totalPages;
+  // Return paginated users with page_number,size,count,total existed pages,existence of both previous and after pages.
+  return {
+    page_number: page,
+    page_size: limit,
+    count: paginatedUsers.length,
+    total_pages: totalPages,
+    has_previous_page: hasPreviousPage,
+    has_next_page: hasNextPage,
+    data: paginatedUsers.map((user) => {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      };
+    })
+  };
 }
 
 
